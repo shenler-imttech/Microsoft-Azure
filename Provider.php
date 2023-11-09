@@ -91,6 +91,7 @@ class Provider extends AbstractProvider
     {
         \Log::info('$user');
         \Log::info($user);
+        \Log::info('test changes from github fork');
 
         return (new User())->setRaw($user)->map([
             'id'            => $user['id'],
