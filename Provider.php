@@ -81,7 +81,28 @@ class Provider extends AbstractProvider
             RequestOptions::PROXY => $this->getConfig('proxy'),
         ]);
 
-        return json_decode((string) $response->getBody(), true);
+        // \Log::info('json_decode((string) $response->getBody(), true);');
+        // \Log::info(json_decode((string) $response->getBody(), true));
+
+        $responseData = json_decode((string) $response->getBody(), true);
+        $userAzureId = $responseData['id'];
+        \Log::info('$userAzureId');
+        \Log::info($userAzureId);
+
+        $url = 'https://graph.microsoft.com/v1.0/users/' . $userAzureId .'?$select=id,displayName,userPrincipalName,mail,employeeId';
+
+        $responseUser = $this->getHttpClient()->get($url, [
+            RequestOptions::HEADERS => [
+                'Accept'        => 'application/json',
+                'Authorization' => 'Bearer '.$token,
+            ],
+            RequestOptions::PROXY => $this->getConfig('proxy'),
+        ]);
+
+        \Log::info('json_decode((string) $responseUser->getBody(), true);');
+        \Log::info(json_decode((string) $responseUser->getBody(), true));
+
+        return json_decode((string) $responseUser->getBody(), true);
     }
 
     /**
@@ -101,6 +122,7 @@ class Provider extends AbstractProvider
             'principalName' => $user['userPrincipalName'],
             'mail'          => $user['mail'],
             'avatar'        => null,
+            'employeeId'        => $user['employeeId'],
         ]);
     }
 
