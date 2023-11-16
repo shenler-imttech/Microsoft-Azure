@@ -85,6 +85,8 @@ class Provider extends AbstractProvider
         // \Log::info(json_decode((string) $response->getBody(), true));
 
         $responseData = json_decode((string) $response->getBody(), true);
+        \Log::info('$responseData');
+        \Log::info($responseData);
         $userAzureId = $responseData['id'];
         \Log::info('$userAzureId');
         \Log::info($userAzureId);
