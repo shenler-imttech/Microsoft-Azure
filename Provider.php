@@ -85,13 +85,13 @@ class Provider extends AbstractProvider
         // \Log::info(json_decode((string) $response->getBody(), true));
 
         $responseData = json_decode((string) $response->getBody(), true);
-        \Log::info('$responseData');
-        \Log::info($responseData);
+        // \Log::info('$responseData');
+        // \Log::info($responseData);
         $userAzureId = $responseData['id'];
-        \Log::info('$userAzureId');
-        \Log::info($userAzureId);
+        // \Log::info('$userAzureId');
+        // \Log::info($userAzureId);
 
-        $url = 'https://graph.microsoft.com/v1.0/users/' . $userAzureId .'?$select=id,displayName,userPrincipalName,mail,employeeId';
+        $url = 'https://graph.microsoft.com/v1.0/users/' . $userAzureId .'?$select=id,displayName,userPrincipalName,mail,employeeId,companyName,extension_08c116d0f0ae4a5e9c7a34af07153591_employeeNumber';
 
         $responseUser = $this->getHttpClient()->get($url, [
             RequestOptions::HEADERS => [
@@ -101,10 +101,16 @@ class Provider extends AbstractProvider
             RequestOptions::PROXY => $this->getConfig('proxy'),
         ]);
 
-        \Log::info('json_decode((string) $responseUser->getBody(), true);');
-        \Log::info(json_decode((string) $responseUser->getBody(), true));
+        // \Log::info('json_decode((string) $responseUser->getBody(), true);');
+        // \Log::info(json_decode((string) $responseUser->getBody(), true));
 
-        return json_decode((string) $responseUser->getBody(), true);
+        \Log::info('----- ENCRYPT MICROSOFT TOKEN -----');
+        $responseUserString = (string) $responseUser->getBody();
+        $decodedArray = json_decode($responseUserString, true);
+        $decodedArray['microsoftTokenEncrypted'] = \Crypt::encrypt($token);
+
+        // return json_decode((string) $responseUser->getBody(), true);
+        return $decodedArray;
     }
 
     /**
@@ -112,9 +118,9 @@ class Provider extends AbstractProvider
      */
     protected function mapUserToObject(array $user)
     {
-        \Log::info('$user');
-        \Log::info($user);
-        \Log::info('test changes from github fork');
+        // \Log::info('$user');
+        // \Log::info($user);
+        // \Log::info('test changes from github fork');
 
         return (new User())->setRaw($user)->map([
             'id'            => $user['id'],
@@ -125,6 +131,8 @@ class Provider extends AbstractProvider
             'mail'          => $user['mail'],
             'avatar'        => null,
             'employeeId'        => $user['employeeId'],
+            'companyName'        => $user['companyName'],
+            'microsoftTokenEncrypted'        => $user['microsoftTokenEncrypted'],
         ]);
     }
 
@@ -136,10 +144,10 @@ class Provider extends AbstractProvider
      */
     public function getAccessTokenResponse($code)
     {
-        \Log::info('$this->getTokenUrl()');
-        \Log::info($this->getTokenUrl());
-        \Log::info('$this->getTokenFields($code)');
-        \Log::info($this->getTokenFields($code));
+        // \Log::info('$this->getTokenUrl()');
+        // \Log::info($this->getTokenUrl());
+        // \Log::info('$this->getTokenFields($code)');
+        // \Log::info($this->getTokenFields($code));
 
         $response = $this->getHttpClient()->post($this->getTokenUrl(), [
             RequestOptions::HEADERS     => ['Accept' => 'application/json'],
