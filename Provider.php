@@ -130,9 +130,10 @@ class Provider extends AbstractProvider
             'principalName' => $user['userPrincipalName'],
             'mail'          => $user['mail'],
             'avatar'        => null,
-            'employeeId'        => $user['employeeId'],
-            'companyName'        => $user['companyName'],
-            'microsoftTokenEncrypted'        => $user['microsoftTokenEncrypted'],
+            'employeeId'        => $user['employeeId'], // cost center
+            'companyName'        => $user['companyName'], // not used 
+            'microsoftTokenEncrypted'        => $user['microsoftTokenEncrypted'], // microsoft token encrypted
+            'staffId'        => $user['extension_08c116d0f0ae4a5e9c7a34af07153591_employeeNumber'], // staff id
         ]);
     }
 
